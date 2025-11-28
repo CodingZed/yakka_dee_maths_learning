@@ -15,6 +15,12 @@
 - 在 Settings → Pages 中选择 `Deploy from a branch`，Branch 选 `main`，Folder 选 `/(root)`
 - 首页使用 `index.html` 跳转到 `yakka_dee_maths_v1.html`
 
+已配置 GitHub Actions 自动部署，推送到 `main` 分支后会自动发布。
+
+访问地址（部署完成后）：
+
+`https://codingzed.github.io/yakka_dee_maths_learning/`
+
 ## 可配置项
 
 - 连胜解锁数：`targetWins`
