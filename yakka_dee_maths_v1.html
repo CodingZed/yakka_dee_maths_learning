@@ -175,8 +175,11 @@
             font-size: 16px;
             box-shadow: 0 4px #4cc100;
         }
-        #plane { position: fixed; top: 8%; left: -120px; font-size: 40px; display: none; }
-        @keyframes fly { 0%{ left:-120px; transform: rotate(0deg);} 100%{ left:110%; transform: rotate(-5deg);} }
+        #plane { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.1); font-size: 52px; display: none; }
+        @keyframes pop { 0%{ transform: translate(-50%, -50%) scale(0.1) rotate(-10deg); opacity: 0; } 60%{ transform: translate(-50%, -50%) scale(1.2) rotate(6deg); opacity: 1; } 100%{ transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        #confetti { position: fixed; inset: 0; pointer-events: none; display: none; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; opacity: 0; }
+        @keyframes burst { 0%{ transform: translate(-50%, -50%) translate(var(--sx), var(--sy)) scale(0.2); opacity: 0; } 50%{ opacity: 1; } 100%{ transform: translate(-50%, -50%) translate(calc(var(--sx)*6), calc(var(--sy)*6)) scale(1); opacity: 0; } }
 
         #cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
 
@@ -247,6 +250,7 @@
 
     <div id="tick">✓</div>
     <div id="plane">✈️</div>
+    <div id="confetti"></div>
 
     <div id="video-gallery" style="display:none; max-width: 960px; margin: 0 auto;">
         <h2 style="color:#7c2ae8">选择一集 Yakka Dee</h2>
@@ -489,8 +493,29 @@
         function showPlane() {
             const plane = document.getElementById('plane');
             plane.style.display = 'block';
-            plane.style.animation = 'fly 1800ms linear';
-            setTimeout(() => { plane.style.display = 'none'; plane.style.animation = ''; }, 1800);
+            plane.style.animation = 'pop 900ms ease-out';
+            spawnConfetti();
+            setTimeout(() => { plane.style.display = 'none'; plane.style.animation = ''; }, 1000);
+        }
+
+        function spawnConfetti() {
+            const colors = ['#ffd166','#ff6b6b','#4ecdc4','#f15bb5','#90e0ef','#ffe66d'];
+            const c = document.getElementById('confetti');
+            c.style.display = 'block';
+            for (let i=0;i<28;i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                const sx = (Math.random()*2-1)*20 + 'px';
+                const sy = (Math.random()*2-1)*20 + 'px';
+                el.style.setProperty('--sx', sx);
+                el.style.setProperty('--sy', sy);
+                el.style.left = '50%';
+                el.style.top = '50%';
+                el.style.background = colors[i%colors.length];
+                el.style.animation = 'burst 900ms ease-out';
+                c.appendChild(el);
+            }
+            setTimeout(() => { c.innerHTML=''; c.style.display='none'; }, 950);
         }
 
         function buildGallery() {
