@@ -165,6 +165,15 @@
             font-size: 16px;
             box-shadow: 0 4px #d0489f;
         }
+        #share-btn {
+            background: #70e000;
+            color: #063970;
+            border: none;
+            border-radius: 18px;
+            padding: 8px 14px;
+            font-size: 16px;
+            box-shadow: 0 4px #4cc100;
+        }
 
         #cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
 
@@ -198,6 +207,7 @@
         <div>
             <button id="gift-btn">🎁 奖励 0</button>
             <button id="parent-btn">家长奖励</button>
+            <button id="share-btn">分享链接</button>
         </div>
     </div>
 
@@ -284,6 +294,7 @@
         window.onload = function() {
             setupStartModal();
             setupParentControls();
+            setupShare();
             document.getElementById('game-area').style.display = 'none';
         };
 
@@ -327,6 +338,23 @@
                 else { alert('密码不正确'); }
             };
             refreshGift();
+        }
+
+        function setupShare() {
+            const shareBtn = document.getElementById('share-btn');
+            const url = 'https://codingzed.github.io/yakka_dee_maths_learning/';
+            shareBtn.onclick = async () => {
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: 'Yakka Dee Maths', url });
+                    } else {
+                        await navigator.clipboard.writeText(url);
+                        alert('链接已复制');
+                    }
+                } catch (e) {
+                    try { await navigator.clipboard.writeText(url); alert('链接已复制'); } catch(_) {}
+                }
+            };
         }
 
         function nextQuestion() {
