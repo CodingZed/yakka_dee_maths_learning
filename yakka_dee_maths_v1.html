@@ -175,6 +175,8 @@
             font-size: 16px;
             box-shadow: 0 4px #4cc100;
         }
+        #plane { position: fixed; top: 8%; left: -120px; font-size: 40px; display: none; }
+        @keyframes fly { 0%{ left:-120px; transform: rotate(0deg);} 100%{ left:110%; transform: rotate(-5deg);} }
 
         #cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
 
@@ -244,6 +246,7 @@
     </div>
 
     <div id="tick">✓</div>
+    <div id="plane">✈️</div>
 
     <div id="video-gallery" style="display:none; max-width: 960px; margin: 0 auto;">
         <h2 style="color:#7c2ae8">选择一集 Yakka Dee</h2>
@@ -293,6 +296,7 @@
         let bonusVideos = 0;
         let episodeTimer = null;
         let watchCounts = JSON.parse(localStorage.getItem('yak_dee_watch') || '{}');
+        let planeCount = parseInt(localStorage.getItem('yak_dee_plane') || '0', 10);
 
         window.onload = function() {
             setupStartModal();
@@ -331,14 +335,12 @@
             const giftBtn = document.getElementById('gift-btn');
             const parentBtn = document.getElementById('parent-btn');
             function refreshGift() {
-                giftBtn.textContent = `🎁 奖励 ${bonusVideos}`;
-                if (bonusVideos > 0) giftBtn.classList.add('enabled'); else giftBtn.classList.remove('enabled');
+                giftBtn.textContent = `🎁 奖励 ${planeCount}`;
             }
-            giftBtn.onclick = () => { if (bonusVideos > 0) { bonusVideos--; refreshGift(); showReward('gift'); } };
+            giftBtn.onclick = () => { showPlane(); };
             parentBtn.onclick = () => {
-                const pwd = prompt('请输入家长密码');
-                if (pwd === parentPassword) { bonusVideos++; refreshGift(); alert('已赠送 1 次视频奖励'); }
-                else { alert('密码不正确'); }
+                const ok = confirm('确认给小朋友奖励一次观看吗？');
+                if (ok) { showReward('parent'); }
             };
             refreshGift();
         }
@@ -477,6 +479,18 @@
             }, 300);
             if (episodeTimer) clearTimeout(episodeTimer);
             episodeTimer = setTimeout(() => { resetGame(); }, EPISODE_MS);
+            planeCount++;
+            localStorage.setItem('yak_dee_plane', String(planeCount));
+            const giftBtn = document.getElementById('gift-btn');
+            giftBtn.textContent = `🎁 奖励 ${planeCount}`;
+            showPlane();
+        }
+
+        function showPlane() {
+            const plane = document.getElementById('plane');
+            plane.style.display = 'block';
+            plane.style.animation = 'fly 1800ms linear';
+            setTimeout(() => { plane.style.display = 'none'; plane.style.animation = ''; }, 1800);
         }
 
         function buildGallery() {
