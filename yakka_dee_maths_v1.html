@@ -7,9 +7,9 @@
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            background-image: url('./yakke_dee_figure1.jpg'), url('./yakke_dee_figure2.jpg'), radial-gradient(circle at 30% 20%, #ffe4f2 0%, #f9d3ff 35%, #c7f5ff 100%);
-            background-size: 40%, 40%, cover;
-            background-position: left 5% bottom 8%, right 6% bottom 10%, center;
+            background-image: radial-gradient(circle at 30% 20%, #ffe4f2 0%, #f9d3ff 35%, #c7f5ff 100%);
+            background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
             text-align: center;
             margin: 0;
@@ -207,6 +207,8 @@
             .zero-chip { width:44px; height:44px; font-size:26px; }
         }
     </style>
+    <link rel="preconnect" href="https://player.bilibili.com" crossorigin>
+    <link rel="dns-prefetch" href="//player.bilibili.com">
 </head>
 <body>
 
@@ -277,10 +279,10 @@
         </div>
     </div>
 
-    <audio id="opening-audio" src="./yakka_dee_opening.mp4" preload="auto"></audio>
-    <audio id="ending-audio" src="./yakka_kee_ending.mp4" preload="auto"></audio>
-    <audio id="correct-audio" src="./yeah yakka dee.m4a" preload="auto"></audio>
-    <audio id="wrong-audio" src="./try again.m4a" preload="auto"></audio>
+    <audio id="opening-audio" src="./yakka_dee_opening.mp4" preload="none"></audio>
+    <audio id="ending-audio" src="./yakka_kee_ending.mp4" preload="none"></audio>
+    <audio id="correct-audio" src="./yeah yakka dee.m4a" preload="none"></audio>
+    <audio id="wrong-audio" src="./try again.m4a" preload="none"></audio>
 
     <script>
         const targetWins = 5;
@@ -307,6 +309,8 @@
             setupParentControls();
             setupShare();
             document.getElementById('game-area').style.display = 'none';
+            lazyBackground();
+            if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
         };
 
         function setupStartModal() {
@@ -331,8 +335,20 @@
                 opening.volume = 1;
                 opening.currentTime = 0;
                 opening.play().catch(()=>{});
+                document.getElementById('correct-audio').load();
+                document.getElementById('wrong-audio').load();
                 resetGame();
             };
+        }
+
+        function lazyBackground() {
+            const apply = () => {
+                document.body.style.backgroundImage = "url('./yakke_dee_figure1.jpg'), url('./yakke_dee_figure2.jpg'), radial-gradient(circle at 30% 20%, #ffe4f2 0%, #f9d3ff 35%, #c7f5ff 100%)";
+                document.body.style.backgroundSize = '40%, 40%, cover';
+                document.body.style.backgroundPosition = 'left 5% bottom 8%, right 6% bottom 10%, center';
+                document.body.style.backgroundRepeat = 'no-repeat';
+            };
+            if (window.requestIdleCallback) requestIdleCallback(apply, {timeout: 800}); else setTimeout(apply, 800);
         }
 
         function setupParentControls() {
