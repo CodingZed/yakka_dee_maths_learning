@@ -38,6 +38,7 @@
             letter-spacing: 5px;
             margin-bottom: 10px;
         }
+        .zero-chip { display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border:3px dashed #90e0ef; border-radius:12px; background:#e8f9fd; color:#0077b6; font-weight:bold; font-size:28px; margin:0 6px; }
         #equation {
             font-size: 64px;
             color: #333;
@@ -186,6 +187,7 @@
             #stars span { width: 36px; height: 36px; margin: 0 4px; }
             iframe { max-width: 100%; border-radius: 14px; }
             #cards { grid-template-columns: repeat(auto-fill,minmax(160px,1fr)) !important; }
+            .zero-chip { width:36px; height:36px; font-size:22px; }
         }
 
         @media (min-width: 481px) and (max-width: 820px) {
@@ -197,6 +199,7 @@
             #stars span { width: 44px; height: 44px; }
             iframe { max-width: 660px; border-radius: 16px; }
             #cards { grid-template-columns: repeat(auto-fill,minmax(200px,1fr)) !important; }
+            .zero-chip { width:44px; height:44px; font-size:26px; }
         }
     </style>
 </head>
@@ -370,28 +373,36 @@
                 n2 = Math.floor(Math.random() * (maxA - n1 + 1));
                 answer = n1 + n2;
                 document.getElementById('equation').innerText = `${n1} + ${n2} = ?`;
-                document.getElementById('visual-aid').innerText = '🍎'.repeat(n1) + ' ➕ ' + '🍎'.repeat(n2);
+                const left = n1 === 0 ? '<span class="zero-chip">0</span>' : '🍎'.repeat(n1);
+                const right = n2 === 0 ? '<span class="zero-chip">0</span>' : '🍎'.repeat(n2);
+                document.getElementById('visual-aid').innerHTML = left + ' ➕ ' + right;
             } else if (op === 'sub') {
                 const maxS = difficulty === 'easy' ? 6 : 10;
                 n1 = Math.floor(Math.random() * (maxS+1));
                 n2 = Math.floor(Math.random() * (n1+1));
                 answer = n1 - n2;
                 document.getElementById('equation').innerText = `${n1} - ${n2} = ?`;
-                document.getElementById('visual-aid').innerText = '🍎'.repeat(n1) + ' ➖ ' + '🍎'.repeat(n2);
+                const left = n1 === 0 ? '<span class="zero-chip">0</span>' : '🍎'.repeat(n1);
+                const right = n2 === 0 ? '<span class="zero-chip">0</span>' : '🍎'.repeat(n2);
+                document.getElementById('visual-aid').innerHTML = left + ' ➖ ' + right;
             } else if (op === 'mul') {
                 const maxM = difficulty === 'easy' ? 5 : 10;
                 n1 = Math.floor(Math.random() * (maxM+1));
                 n2 = Math.floor(Math.random() * (maxM+1));
                 answer = n1 * n2;
                 document.getElementById('equation').innerText = `${n1} × ${n2} = ?`;
-                document.getElementById('visual-aid').innerText = '⭐'.repeat(n1) + ' ✖️ ' + '⭐'.repeat(n2);
+                const left = n1 === 0 ? '<span class="zero-chip">0</span>' : '⭐'.repeat(n1);
+                const right = n2 === 0 ? '<span class="zero-chip">0</span>' : '⭐'.repeat(n2);
+                document.getElementById('visual-aid').innerHTML = left + ' ✖️ ' + right;
             } else {
                 const maxD = difficulty === 'easy' ? 5 : 10;
                 n2 = Math.max(1, Math.floor(Math.random() * (maxD+1)));
                 n1 = n2 * Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 10));
                 answer = n1 / n2;
                 document.getElementById('equation').innerText = `${n1} ÷ ${n2} = ?`;
-                document.getElementById('visual-aid').innerText = '🧩'.repeat(n1) + ' ➗ ' + '🧩'.repeat(n2);
+                const left = n1 === 0 ? '<span class="zero-chip">0</span>' : '🧩'.repeat(n1);
+                const right = '🧩'.repeat(n2);
+                document.getElementById('visual-aid').innerHTML = left + ' ➗ ' + right;
             }
             currentCorrectAnswer = answer;
             generateButtons(answer);
